@@ -1,0 +1,20 @@
+{
+  "name": "serverless-project",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "npx sls invoke local -f api"
+  },
+  "dependencies": {
+    "@aws-sdk/client-sqs": "^3.585.0",
+    "@google/rbmwebhookclient": "^1.0.0",
+    "@google/rcsbusinessmessaging": "^1.0.8",
+    "follow-redirects": "^1.15.6",
+    "serverless": "^3.24.1"
+  },
+  "devDependencies": {
+    "esbuild-loader": "^2.16.0",
+    "serverless-iam-roles-per-function": "^3.2.0",
+    "serverless-webpack": "^5.14.1"
+  }
+}

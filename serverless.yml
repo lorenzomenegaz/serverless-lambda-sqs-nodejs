@@ -1,0 +1,52 @@
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: serverless-project
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-2
+  environment:
+    # QUEUE_URL: Ref SQSCampaignQueue.QueueUrl
+    ACCOUNT_ID: ${aws:accountId}
+    RBM_API_URL: ""
+    RBM_API_KEY: ""
+    BASE_INFOBIP_API: ""
+    INFOBIP_API_KEY: ""
+
+custom:
+  webpack:
+    keepOutputDirectory: true
+    includeModules: true
+    webpackConfig: ./webpack.config.js
+    packager: 'npm'
+    packagerOptions:
+      scripts:
+        - rm -rf node_modules/aws-sdk
+
+package:
+  individually: true
+
+plugins:
+  - serverless-webpack
+  - serverless-iam-roles-per-function
+
+functions:
+  api:
+    handler: src/handler.handler
+    iamRoleStatements:
+      - Effect: "Allow"        
+        Action:
+          - sqs:receivemessage
+          - sqs:deletemessage
+        Resource: "arn:aws:sqs:${self:provider.region}:*:SQSCampaignQueue"
+    # events:
+    #   - schedule: rate(1 minute)
+
+resources:
+  Resources:
+    SQSCampaignQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "SQSCampaignQueue"
